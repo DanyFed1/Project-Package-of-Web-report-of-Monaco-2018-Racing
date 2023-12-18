@@ -11,3 +11,5 @@ class TestCLI:
         mock_print_report.assert_called_once()
 
     #To complete the rest
+
+    #Before completing tests and packagin want to make sure I did not miss anything in functionality.

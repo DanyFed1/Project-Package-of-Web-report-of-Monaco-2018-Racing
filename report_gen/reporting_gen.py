@@ -1,4 +1,5 @@
 import os
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 import re
@@ -11,22 +12,22 @@ class DriverLapInfo:
     driver_init: str
     start_time: datetime
     end_time: datetime = field(init=False)
-    lap_time: datetime = field(init=False)
     driver_name: str = ""
     team: str = ""
 
-    def calculate_lap_time(self):
+    @property
+    def driver_lap_time(self):
         #adding comparison as time data in end.log is not reliable, e.g. for some driver end time is earlier then start time
         if self.end_time<self.start_time:
-            self.lap_time = self.start_time - self.end_time
+            return "NO TIME COULD BE DETERMINED BASED ON INPUT FILES"
         else:
-            self.lap_time = self.end_time - self.start_time
+            return str(self.end_time - self.start_time)
 
 class Q1Processor:
     """
     A class to process the Formula 1 Q1 lap times.
     """
-    def __init__(self, folder_path):
+    def __init__(self, folder_path:str) -> None:
         """
         Initialize the Q1Processor with paths to files.
         """
@@ -35,7 +36,7 @@ class Q1Processor:
         self.txt_path = os.path.join(folder_path, 'abbreviations.txt')
         self.drivers = {}
 
-    def read_log_file(self, file_path):
+    def read_log_file(self, file_path:str) -> Dict[str, datetime]:
         """
         Read a log file and return the data as a dictionary.
         """
@@ -52,7 +53,7 @@ class Q1Processor:
             print(f"Error reading file {file_path}: {e}")
         return data
 
-    def integrate_driver_info(self):
+    def integrate_driver_info(self) -> None:
         """
         Integrate driver information from the abbreviations file.
         """
@@ -66,7 +67,7 @@ class Q1Processor:
         except IOError as e:
             print(f"Error reading file {self.txt_path}: {e}")
 
-    def process_files(self):
+    def process_files(self) -> None:
         """
         Process the start and end log files to populate the drivers dictionary.
         """
@@ -77,7 +78,6 @@ class Q1Processor:
             driver_info = DriverLapInfo(driver_init, start_time)
             if driver_init in end_times:
                 driver_info.end_time = end_times[driver_init]
-                driver_info.calculate_lap_time()
             self.drivers[driver_init] = driver_info
 
         self.integrate_driver_info()
@@ -85,33 +85,38 @@ class Q1Processor:
 
 class Q1ReportGenerator:
     """A class to generate a report for the Formula 1 Q1 lap times."""
-    def __init__(self, processor):
+    def __init__(self, processor:Q1Processor) -> None:
         """Reporting is based on Q1Processor instance."""
         self.processor = processor
         self.processor.process_files()  # Process files upon initialization
 
-    def rank_drivers(self, order='asc'):
+    def rank_drivers(self, order: str = 'asc') -> List[DriverLapInfo]:
         """Rank the drivers based on their lap times, by default ranks asc"""
         drivers = [driver for driver in self.processor.drivers.values()]
-        return sorted(drivers, key=lambda x: x.lap_time, reverse=(order == 'desc'))
+        #Anomaly data should alway be the end of our classification.
+        drivers.sort(
+            key=lambda x: (x.driver_lap_time == "NO TIME COULD BE DETERMINED BASED ON INPUT FILES", x.driver_lap_time),
+            reverse=(order == 'desc'))
+        return drivers
 
-    def print_report(self, order='asc'):
+    def print_report(self, order: str = 'asc') -> None:
         """Print the results of the Q1 based on order, by default ranks asc"""
         ranked_drivers = self.rank_drivers(order)
         print("Formula 1 - Qualifying Q1 Results\n")
         for i, driver in enumerate(ranked_drivers, start=1):
-            if order == 'desc' and len(ranked_drivers) - i == 15:
+            if order == 'desc' and len(ranked_drivers) - i == 14:
                 print("-" * 36 + 'ELIMINATED' + "-" * 36)
             elif order == 'asc' and i == 16:
                 print("-" * 36 + 'ELIMINATED' + "-" * 36)
-            time_str = str(driver.lap_time)
+            time_str = driver.driver_lap_time
             print(f"{i}. {driver.driver_name:<20} | {driver.team:<30} | {time_str}")
 
-    def driver_info(self, driver_name):
+
+def driver_info(self, driver_name: str) -> str:
         """Retrieve information for a specific driver."""
         for driver in self.processor.drivers.values():
             if driver.driver_name == driver_name:
-                time_str = str(driver.lap_time)
+                time_str = driver.driver_lap_time
                 return f"{driver.driver_name:<20} | {driver.team:<30} | {time_str}"
         return f"Driver {driver_name} not found."
 
