@@ -1,14 +1,13 @@
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List
 from dataclasses import dataclass, field
 from datetime import datetime
 import re
 
+
 @dataclass
 class DriverLapInfo:
-    """
-        A class to represent a driver's information.
-    """
+    """A class to represent a driver's information."""
     driver_init: str
     start_time: datetime
     end_time: datetime = field(init=False)
@@ -17,17 +16,17 @@ class DriverLapInfo:
 
     @property
     def driver_lap_time(self):
-        #adding comparison as time data in end.log is not reliable, e.g. for some driver end time is earlier then start time
-        if self.end_time<self.start_time:
+        # adding comparison as time data in end.log is not reliable, e.g. for
+        # some driver end time is earlier then start time
+        if self.end_time < self.start_time:
             return "NO TIME COULD BE DETERMINED BASED ON INPUT FILES"
         else:
             return str(self.end_time - self.start_time)
 
+
 class Q1Processor:
-    """
-    A class to process the Formula 1 Q1 lap times.
-    """
-    def __init__(self, folder_path:str) -> None:
+    """ A class to process the Formula 1 Q1 lap times."""
+    def __init__(self, folder_path: str) -> None:
         """
         Initialize the Q1Processor with paths to files.
         """
@@ -36,27 +35,26 @@ class Q1Processor:
         self.txt_path = os.path.join(folder_path, 'abbreviations.txt')
         self.drivers = {}
 
-    def read_log_file(self, file_path:str) -> Dict[str, datetime]:
-        """
-        Read a log file and return the data as a dictionary.
-        """
+    def read_log_file(self, file_path: str) -> Dict[str, datetime]:
+        """Read a log file and return the data as a dictionary."""
         data = {}
         try:
             with open(file_path, 'r') as file:
                 for line in file:
-                    match = re.match(r"([A-Z]{3})(\d{4}-\d{2}-\d{2}_\d{2}:\d{2}:\d{2}\.\d{3})", line.strip())
+                    match = re.match(
+                        r"([A-Z]{3})(\d{4}-\d{2}-\d{2}_\d{2}:\d{2}:\d{2}\.\d{3})",
+                        line.strip())
                     if match:
                         driver_init, timestamp_str = match.groups()
-                        timestamp = datetime.strptime(timestamp_str, '%Y-%m-%d_%H:%M:%S.%f')
+                        timestamp = datetime.strptime(
+                            timestamp_str, '%Y-%m-%d_%H:%M:%S.%f')
                         data[driver_init] = timestamp
         except IOError as e:
             print(f"Error reading file {file_path}: {e}")
         return data
 
     def integrate_driver_info(self) -> None:
-        """
-        Integrate driver information from the abbreviations file.
-        """
+        """Integrate driver information from the abbreviations file."""
         try:
             with open(self.txt_path, 'r') as file:
                 for line in file:
@@ -68,9 +66,7 @@ class Q1Processor:
             print(f"Error reading file {self.txt_path}: {e}")
 
     def process_files(self) -> None:
-        """
-        Process the start and end log files to populate the drivers dictionary.
-        """
+        """Process the start and end log files to populate the drivers dictionary."""
         start_times = self.read_log_file(self.start_log_path)
         end_times = self.read_log_file(self.end_log_path)
 
@@ -85,7 +81,8 @@ class Q1Processor:
 
 class Q1ReportGenerator:
     """A class to generate a report for the Formula 1 Q1 lap times."""
-    def __init__(self, processor:Q1Processor) -> None:
+
+    def __init__(self, processor: Q1Processor) -> None:
         """Reporting is based on Q1Processor instance."""
         self.processor = processor
         self.processor.process_files()  # Process files upon initialization
@@ -93,10 +90,13 @@ class Q1ReportGenerator:
     def rank_drivers(self, order: str = 'asc') -> List[DriverLapInfo]:
         """Rank the drivers based on their lap times, by default ranks asc"""
         drivers = [driver for driver in self.processor.drivers.values()]
-        #Anomaly data should alway be the end of our classification.
+        # Anomaly data should alway be the end of our classification.
         drivers.sort(
-            key=lambda x: (x.driver_lap_time == "NO TIME COULD BE DETERMINED BASED ON INPUT FILES", x.driver_lap_time),
-            reverse=(order == 'desc'))
+            key=lambda x: (
+                x.driver_lap_time == "NO TIME COULD BE DETERMINED BASED ON INPUT FILES",
+                x.driver_lap_time),
+            reverse=(
+                order == 'desc'))
         return drivers
 
     def print_report(self, order: str = 'asc') -> None:
@@ -112,7 +112,7 @@ class Q1ReportGenerator:
             print(f"{i}. {driver.driver_name:<20} | {driver.team:<30} | {time_str}")
 
 
-def driver_info(self, driver_name: str) -> str:
+    def driver_info(self, driver_name: str) -> str:
         """Retrieve information for a specific driver."""
         for driver in self.processor.drivers.values():
             if driver.driver_name == driver_name:
