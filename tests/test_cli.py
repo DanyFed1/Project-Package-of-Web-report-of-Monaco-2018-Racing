@@ -1,15 +1,33 @@
 import pytest
 from unittest.mock import patch, MagicMock
-import report_gen_cli
+import report_gen_cli as cli
+import report_gen as rpg
+
+# Mock data for testing
+MOCK_FILES_PATH = "/mock/path"
+MOCK_DRIVER_NAME = "Sebastian Vettel"
 
 class TestCLI:
-    @patch('argparse.ArgumentParser.parse_args')
-    @patch('report_gen.Q1ReportGenerator.print_report')
-    def test_cli_default_behavior(self, mock_print_report, mock_parse_args):
-        mock_parse_args.return_value = MagicMock(files="/some/path", order='asc', driver=None)
-        report_gen_cli.main()
-        mock_print_report.assert_called_once()
+    @patch('report_gen_cli.rpg.Q1Processor')
+    @patch('report_gen_cli.rpg.Q1ReportGenerator')
+    def test_cli_default_behavior(self, mock_report_generator, mock_processor):
+        with patch('sys.argv', ['report_gen_cli.py', '--files', MOCK_FILES_PATH]):
+            cli.main()
+            mock_processor.assert_called_once_with(MOCK_FILES_PATH)
+            mock_report_generator.assert_called_once()
 
-    #To complete the rest
+    @patch('report_gen_cli.rpg.Q1Processor')
+    @patch('report_gen_cli.rpg.Q1ReportGenerator')
+    def test_cli_descending_order(self, mock_report_generator, mock_processor):
+        with patch('sys.argv', ['report_gen_cli.py', '--files', MOCK_FILES_PATH, '--order', 'desc']):
+            cli.main()
+            mock_processor.assert_called_once_with(MOCK_FILES_PATH)
+            mock_report_generator.return_value.print_report.assert_called_once_with('desc')
 
-    #Before completing tests and packagin want to make sure I did not miss anything in functionality.
+    @patch('report_gen_cli.rpg.Q1Processor')
+    @patch('report_gen_cli.rpg.Q1ReportGenerator')
+    def test_cli_specific_driver(self, mock_report_generator, mock_processor):
+        with patch('sys.argv', ['report_gen_cli.py', '--files', MOCK_FILES_PATH, '--driver', MOCK_DRIVER_NAME]):
+            cli.main()
+            mock_processor.assert_called_once_with(MOCK_FILES_PATH)
+            mock_report_generator.return_value.driver_info.assert_called_once_with(MOCK_DRIVER_NAME)
