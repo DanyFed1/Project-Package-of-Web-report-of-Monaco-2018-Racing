@@ -1,7 +1,7 @@
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 
@@ -15,13 +15,13 @@ class DriverLapInfo:
     team: str = ""
 
     @property
-    def driver_lap_time(self):
+    def driver_lap_time(self) -> Optional[timedelta]:
         # adding comparison as time data in end.log is not reliable, e.g. for
         # some driver end time is earlier then start time
         if self.end_time < self.start_time:
-            return "NO TIME COULD BE DETERMINED BASED ON INPUT FILES"
+            return None
         else:
-            return str(self.end_time - self.start_time)
+            return self.end_time - self.start_time
 
 
 class Q1Processor:
@@ -93,7 +93,7 @@ class Q1ReportGenerator:
         # Anomaly data should alway be the end of our classification.
         drivers.sort(
             key=lambda x: (
-                x.driver_lap_time == "NO TIME COULD BE DETERMINED BASED ON INPUT FILES",
+                x.driver_lap_time == None,
                 x.driver_lap_time),
             reverse=(
                 order == 'desc'))
@@ -109,7 +109,10 @@ class Q1ReportGenerator:
             elif order == 'asc' and i == 16:
                 print("-" * 36 + 'ELIMINATED' + "-" * 36)
             time_str = driver.driver_lap_time
-            print(f"{i}. {driver.driver_name:<20} | {driver.team:<30} | {time_str}")
+            if driver.driver_lap_time is not None:
+                print(f"{i}. {driver.driver_name:<20} | {driver.team:<30} | {time_str}")
+            else:
+                print(f"{i}. {driver.driver_name:<20} | {driver.team:<30} | {'NO TIME COULD BE DETERMINED BASED ON INPUT FILES'}")
 
 
     def driver_info(self, driver_name: str) -> str:
