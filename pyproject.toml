@@ -1,0 +1,25 @@
+[project]
+name = "f1_q1_report_generator_df1"
+version = "0.0.1"
+authors = [
+  { name="Daniils Fjodorovs", email="danyfed.study@gmail.com" },
+]
+description = "Processes log files to create a Fromula 1 Q1 "
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://git.foxminded.ua/foxstudent106391/task-6-report-of-monaco-2018-racing/"
+Issues = "https://git.foxminded.ua/foxstudent106391/task-6-report-of-monaco-2018-racing/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["src/unq_chr_counter"]
