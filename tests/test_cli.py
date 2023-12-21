@@ -1,7 +1,5 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 import report_gen_cli as cli
-import report_gen as rpg
 
 # Mock data for testing
 MOCK_FILES_PATH = "/mock/path"

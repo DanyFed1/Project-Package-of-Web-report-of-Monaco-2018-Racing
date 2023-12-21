@@ -1,5 +1,5 @@
 import argparse
-import report_gen as rpg
+from src import report_gen as rpg
 
 
 def parsing_fun():
@@ -43,4 +43,4 @@ if __name__ == "__main__":
 # #Example usage:
 # python report_gen_cli.py --files /Users/daniilfjodorov/Desktop/CodingProjects/Foxminded/Task_6_Report_of_Monaco_2018_Racing/pythonProject/files
 # python report_gen_cli.py --files /Users/daniilfjodorov/Desktop/CodingProjects/Foxminded/Task_6_Report_of_Monaco_2018_Racing/pythonProject/files --order desc
-# python report_gen_cli.py --files /Users/daniilfjodorov/Desktop/CodingProjects/Foxminded/Task_6_Report_of_Monaco_2018_Racing/pythonProject/files --driver "Sebastian Vettel"
+# python src/report_gen/report_gen_cli.py --files /Users/daniilfjodorov/Desktop/CodingProjects/Foxminded/Task_6_Report_of_Monaco_2018_Racing/pythonProject/files --driver "Lewis Hamilton"

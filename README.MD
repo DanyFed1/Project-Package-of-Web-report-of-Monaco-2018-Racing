@@ -9,6 +9,7 @@ Command-line interface for easy interaction.
 
 #### Installation
 Before you begin, ensure you have Python installed on your system. This package is compatible with Python 3.8 and above.
+You can install using pip install --index-url https://test.pypi.org/simple/ --no-deps f1-q1-report-generator-df1
 
 #### Usage
 The package can be run from the command line. It requires the path to a folder containing three specific files: start.log, end.log, and abbreviations.txt.
@@ -19,11 +20,9 @@ The package can be run from the command line. It requires the path to a folder c
 --driver: (Optional) Get lap time information for a specific driver.
 
 ###### Examples
-1. Generate a report with lap times in ascending order: python report_gen_cli.py --files /path/to/data/files
-2. Generate a report with lap times in descending order: python report_gen_cli.py --files /path/to/data/files --order desc
-3. Get lap time information for a specific driver:
-
-python report_gen_cli.py --files /path/to/data/files --driver "Sebastian Vettel"
+1. Generate a report with lap times in ascending order: python -m report_gen_cli --files /path/to/data/files
+2. Generate a report with lap times in descending order:  python -m report_gen_cli --files /path/to/data/files --order desc
+3. Get lap time information for a specific driver: python -m report_gen_cli --files /path/to/data/files --driver "Sebastian Vettel"
 
 Replace /path/to/data/files with the actual path to your data files.
 
@@ -41,3 +40,6 @@ This file contains the driver abbreviations along with the full driver name and 
 [Driver Abbreviation][Full Driver Name][Team]
 
 Example: SVF_Sebastian Vettel_FERRARI
+
+###### PyPi page: 
+https://test.pypi.org/project/f1-q1-report-generator-df1/0.0.7/

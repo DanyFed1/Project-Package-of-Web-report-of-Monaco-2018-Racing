@@ -1,6 +1,5 @@
-import pytest
 from unittest.mock import patch, mock_open
-import report_gen as rpg
+from src import report_gen as rpg
 # from report_gen import reporting_gen as rpg
 from datetime import datetime
 
