@@ -1,5 +1,5 @@
 import argparse
-from src import report_gen as rpg
+import report_gen as rpg
 
 
 def parsing_fun():

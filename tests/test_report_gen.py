@@ -1,5 +1,5 @@
 from unittest.mock import patch, mock_open
-from src import report_gen as rpg
+import report_gen as rpg
 # from report_gen import reporting_gen as rpg
 from datetime import datetime
 

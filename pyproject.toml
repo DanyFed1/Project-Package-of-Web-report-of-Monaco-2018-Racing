@@ -1,6 +1,6 @@
 [project]
 name = "f1_q1_report_generator_df1"
-version = "0.0.7"
+version = "0.0.8"
 authors = [
   { name="Daniils Fjodorovs", email="danyfed.study@gmail.com" },
 ]
@@ -25,7 +25,7 @@ build-backend = "hatchling.build"
 report-gen-cli = "report_gen_cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/report_gen"]
+packages = ["report_gen"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "report_gen_cli.py" = "report_gen_cli.py"
