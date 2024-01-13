@@ -1,3 +1,5 @@
+#### Study project the goal of which is to familiarize myself with the process of creating python packages
+
 #### F1 Q1 Lap Time Report Generator
 This Python package provides a command-line interface (CLI) to generate a report of Formula 1 Q1 lap times. It processes log files containing start and end times of laps and driver abbreviations to rank drivers based on their lap times.
 
